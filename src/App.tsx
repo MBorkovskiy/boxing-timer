@@ -18,13 +18,22 @@ function App() {
     rest: rest,
     rounds: rounds,
   });
+  const roundMinutesToShow =
+    roundLength.minutes < 10 ? `0${roundLength.minutes}` : roundLength.minutes;
+  const restMinutesToShow =
+    rest.minutes < 10 ? `0${rest.minutes}` : rest.minutes;
+
+  const roundSecondsToShow =
+    roundLength.seconds < 10 ? `0${roundLength.seconds}` : roundLength.seconds;
+  const restSecondsToShow =
+    rest.seconds < 10 ? `0${rest.seconds}` : rest.seconds;
 
   const roundLengthHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     setRoundLength(prev => {
       return {
         ...prev,
-        [name]: value,
+        [name]: Number(value.slice(0, 2)),
       };
     });
   };
@@ -34,7 +43,7 @@ function App() {
     setRest(prev => {
       return {
         ...prev,
-        [name]: value,
+        [name]: Number(value.slice(0, 2)),
       };
     });
   };
@@ -49,10 +58,13 @@ function App() {
   };
 
   useEffect(() => {
+    if (activeTimer && gongRef?.current) gongRef?.current?.play();
+  }, [activeTimer, gongRef?.current]);
+
+  useEffect(() => {
     if (isAccepted) {
       if ((roundLength.minutes || roundLength.seconds) && Number(rounds) > 0) {
         setActiveTimer('round');
-        gongRef?.current?.play();
         const roundTimer = setTimeout(() => {
           if (roundLength.seconds > 0) {
             setRoundLength(prev => {
@@ -80,7 +92,6 @@ function App() {
         rounds &&
         (rest.minutes > 0 || rest.seconds > 0)
       ) {
-        gongRef?.current?.play();
         setActiveTimer('rest');
         const restTimer = setTimeout(() => {
           if (rest.seconds > 0) {
@@ -122,7 +133,7 @@ function App() {
 
   return (
     <div className="h-screen bg-gray-600 flex justify-center flex-col items-center p-5">
-      <div className="flex gap-5 flex-col max-w-3xl ">
+      <div className="flex gap-5 flex-col max-w-[300px] ">
         <audio src={gong} ref={gongRef}></audio>
         <Card
           className={`p-5 ${
@@ -137,11 +148,15 @@ function App() {
           </p>
           <div className="flex justify-center text-white text-7xl font-bold">
             <p>
-              {activeTimer === 'round' ? roundLength.minutes : rest.minutes}
+              {activeTimer === 'round' || !activeTimer
+                ? roundMinutesToShow
+                : restMinutesToShow}
             </p>
             :
             <p>
-              {activeTimer === 'round' ? roundLength.seconds : rest.seconds}
+              {activeTimer === 'round' || !activeTimer
+                ? roundSecondsToShow
+                : restSecondsToShow}
             </p>
           </div>
         </Card>
@@ -150,6 +165,8 @@ function App() {
             <Label>Длина раунда</Label>
             <div className="flex gap-2">
               <Input
+                max={3}
+                maxLength={3}
                 value={roundLength.minutes}
                 type="number"
                 placeholder="Минуты"
