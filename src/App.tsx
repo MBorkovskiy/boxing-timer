@@ -7,8 +7,8 @@ import { Label } from './components/ui/label';
 import gong from './audio/gong.mp3';
 
 function App() {
-  const [roundLength, setRoundLength] = useState({ minutes: 0, seconds: 2 });
-  const [rest, setRest] = useState({ minutes: 0, seconds: 2 });
+  const [roundLength, setRoundLength] = useState({ minutes: 1, seconds: 30 });
+  const [rest, setRest] = useState({ minutes: 0, seconds: 30 });
   const [activeTimer, setActiveTimer] = useState<'round' | 'rest' | null>(null);
   const [rounds, setRounds] = useState('3');
   const [isAccepted, setIsAccepted] = useState(false);
