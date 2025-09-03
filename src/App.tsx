@@ -133,7 +133,7 @@ function App() {
 
   return (
     <div className="h-screen bg-gray-600 flex justify-center flex-col items-center p-5">
-      <div className="flex gap-5 flex-col max-w-[300px] ">
+      <div className="flex gap-5 flex-col w-[300px] ">
         <audio src={gong} ref={gongRef}></audio>
         <Card
           className={`p-5 ${
@@ -161,65 +161,68 @@ function App() {
           </div>
         </Card>
         <Card className="p-5 bg-white">
-          <div className="flex gap-1 flex-col w-full">
-            <Label>Длина раунда</Label>
-            <div className="flex gap-2">
-              <Input
-                max={3}
-                maxLength={3}
-                value={roundLength.minutes}
-                type="number"
-                placeholder="Минуты"
-                name="minutes"
-                onChange={roundLengthHandler}
-              />
-              <Input
-                value={roundLength.seconds}
-                type="number"
-                placeholder="Секунды"
-                name="seconds"
-                onChange={roundLengthHandler}
-              />
-            </div>
-          </div>
-          <div className="flex gap-1 flex-col w-full">
-            <Label>Отдых</Label>
-            <div className="flex gap-2">
-              <Input
-                value={rest.minutes}
-                type="number"
-                placeholder="Минуты"
-                name="minutes"
-                onChange={restLengthHandler}
-              />
-              <Input
-                value={rest.seconds}
-                type="number"
-                placeholder="Секунды"
-                name="seconds"
-                onChange={restLengthHandler}
-              />
-            </div>
-          </div>
-          <div className="flex gap-5 justify-between items-end">
-            <div className="flex gap-1 flex-col">
-              <Label>Количество раундов</Label>
-              <Input
-                type="number"
-                placeholder="Количество раундов"
-                value={rounds}
-                onChange={e => setRounds(e.target.value)}
-              />
-            </div>
-            <Button
-              variant="outline"
-              className="bg-white"
-              disabled={isAccepted}
-              onClick={acceptHandler}>
-              Применить
-            </Button>
-          </div>
-          {isAccepted && (
+          {!isAccepted ? (
+            <>
+              <div className="flex gap-1 flex-col w-full">
+                <Label>Длина раунда</Label>
+                <div className="flex gap-2">
+                  <Input
+                    max={3}
+                    maxLength={3}
+                    value={roundLength.minutes}
+                    type="number"
+                    placeholder="Минуты"
+                    name="minutes"
+                    onChange={roundLengthHandler}
+                  />
+                  <Input
+                    value={roundLength.seconds}
+                    type="number"
+                    placeholder="Секунды"
+                    name="seconds"
+                    onChange={roundLengthHandler}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-1 flex-col w-full">
+                <Label>Отдых</Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={rest.minutes}
+                    type="number"
+                    placeholder="Минуты"
+                    name="minutes"
+                    onChange={restLengthHandler}
+                  />
+                  <Input
+                    value={rest.seconds}
+                    type="number"
+                    placeholder="Секунды"
+                    name="seconds"
+                    onChange={restLengthHandler}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-5 justify-between items-end">
+                <div className="flex gap-1 flex-col">
+                  <Label>Количество раундов</Label>
+                  <Input
+                    type="number"
+                    placeholder="Количество раундов"
+                    value={rounds}
+                    onChange={e => setRounds(e.target.value)}
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  className="bg-white"
+                  disabled={isAccepted}
+                  onClick={acceptHandler}>
+                  Применить
+                </Button>
+              </div>
+            </>
+          ) : (
             <Button
               variant="outline"
               className="bg-white"
