@@ -63,7 +63,33 @@ function App() {
 
   useEffect(() => {
     if (isAccepted) {
-      if ((roundLength.minutes || roundLength.seconds) && Number(rounds) > 0) {
+      if ((rest.minutes || rest.seconds) && Number(rounds) > 0) {
+        setActiveTimer('rest');
+        const restTimer = setTimeout(() => {
+          if (rest.seconds > 0) {
+            setRest(prev => {
+              return {
+                ...prev,
+
+                seconds: prev.seconds - 1,
+              };
+            });
+          } else {
+            setRest(prev => {
+              return {
+                seconds: 60,
+                minutes: prev.minutes - 1,
+              };
+            });
+          }
+        }, 1000);
+        return () => clearTimeout(restTimer);
+      } else if (
+        !rest.minutes &&
+        !rest.seconds &&
+        rounds &&
+        (roundLength.minutes > 0 || roundLength.seconds > 0)
+      ) {
         setActiveTimer('round');
         const roundTimer = setTimeout(() => {
           if (roundLength.seconds > 0) {
@@ -86,32 +112,6 @@ function App() {
         return () => {
           clearTimeout(roundTimer);
         };
-      } else if (
-        !roundLength.minutes &&
-        !roundLength.seconds &&
-        rounds &&
-        (rest.minutes > 0 || rest.seconds > 0)
-      ) {
-        setActiveTimer('rest');
-        const restTimer = setTimeout(() => {
-          if (rest.seconds > 0) {
-            setRest(prev => {
-              return {
-                ...prev,
-
-                seconds: prev.seconds - 1,
-              };
-            });
-          } else {
-            setRest(prev => {
-              return {
-                seconds: 60,
-                minutes: prev.minutes - 1,
-              };
-            });
-          }
-        }, 1000);
-        return () => clearTimeout(restTimer);
       } else if (
         !roundLength.minutes &&
         !roundLength.seconds &&
@@ -142,8 +142,8 @@ function App() {
               : 'bg-amber-400'
           } flex flex-col justify-center`}>
           <p className="text-center text-white ">
-            {activeTimer === 'round' ? 'Раунд:' : ''}
-            {activeTimer === 'rest' ? 'Отдых:' : ''}
+            {activeTimer === 'round' ? `Раунд ${rounds}:` : ''}
+            {activeTimer === 'rest' ? 'Подготовка:' : ''}
             {!activeTimer ? 'Таймер:' : ''}
           </p>
           <div className="flex justify-center text-white text-7xl font-bold">
@@ -163,6 +163,25 @@ function App() {
         <Card className="p-5 bg-white">
           {!isAccepted ? (
             <>
+              <div className="flex gap-1 flex-col w-full">
+                <Label>Подготовка</Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={rest.minutes}
+                    type="number"
+                    placeholder="Минуты"
+                    name="minutes"
+                    onChange={restLengthHandler}
+                  />
+                  <Input
+                    value={rest.seconds}
+                    type="number"
+                    placeholder="Секунды"
+                    name="seconds"
+                    onChange={restLengthHandler}
+                  />
+                </div>
+              </div>
               <div className="flex gap-1 flex-col w-full">
                 <Label>Длина раунда</Label>
                 <div className="flex gap-2">
@@ -184,25 +203,7 @@ function App() {
                   />
                 </div>
               </div>
-              <div className="flex gap-1 flex-col w-full">
-                <Label>Отдых</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={rest.minutes}
-                    type="number"
-                    placeholder="Минуты"
-                    name="minutes"
-                    onChange={restLengthHandler}
-                  />
-                  <Input
-                    value={rest.seconds}
-                    type="number"
-                    placeholder="Секунды"
-                    name="seconds"
-                    onChange={restLengthHandler}
-                  />
-                </div>
-              </div>
+
               <div className="flex gap-5 justify-between items-end">
                 <div className="flex gap-1 flex-col">
                   <Label>Количество раундов</Label>
